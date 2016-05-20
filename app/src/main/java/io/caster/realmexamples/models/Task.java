@@ -4,11 +4,11 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class Task extends RealmObject {
+
     @PrimaryKey
     private String id;
     private String title;
     private String description;
-
 
     public String getId() {
         return id;
