@@ -1,9 +1,11 @@
 package io.caster.realmexamples.models;
 
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
-public class Task extends RealmObject {
+@RealmClass
+public class Task implements RealmModel, Comparable<Task> {
 
     @PrimaryKey
     private String id;
@@ -32,5 +34,10 @@ public class Task extends RealmObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public int compareTo(Task another) {
+        return 0;
     }
 }

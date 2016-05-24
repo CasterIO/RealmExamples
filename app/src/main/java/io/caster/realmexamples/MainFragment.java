@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import java.util.UUID;
 
 import io.caster.realmexamples.models.Task;
+import io.caster.realmexamples.models.User;
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 
@@ -48,8 +50,17 @@ public class MainFragment extends Fragment {
                 t.setId(UUID.randomUUID().toString());
                 t.setTitle("Goodbye");
                 t.setDescription("This is a description");
+
+                if (RealmObject.isValid(t)) {
+                    // do something.
+                }
+
+                User u = realm.createObject(User.class);
+                u.setFirstName("Foo");
+                u.setId(UUID.randomUUID().toString());
             }
         });
+
 
         RealmResults<Task> tasks = realm.where(Task.class)
                 .contains("title", "Goodbye")
