@@ -16,7 +16,7 @@ public class RealmExamplesApplication extends Application {
                 .name("examples.realm")
                 .build();
 
-        //Realm.deleteRealm(realmConfiguration); //Deletes the realm,
+        Realm.deleteRealm(realmConfiguration); //Deletes the realm,
         // use when you want a clean slate for dev/etc
 
         // Make this Realm the default

@@ -8,6 +8,8 @@ public class User extends RealmObject {
     @PrimaryKey
     private String id;
     private String firstName;
+    private String lastName;
+    private Task task;
 
 
     public String getId() {
@@ -24,5 +26,21 @@ public class User extends RealmObject {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 }

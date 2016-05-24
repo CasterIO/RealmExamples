@@ -11,6 +11,7 @@ public class Task implements RealmModel, Comparable<Task> {
     private String id;
     private String title;
     private String description;
+    private boolean isCompleted;
 
     public String getId() {
         return id;
@@ -39,5 +40,13 @@ public class Task implements RealmModel, Comparable<Task> {
     @Override
     public int compareTo(Task another) {
         return 0;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
     }
 }
