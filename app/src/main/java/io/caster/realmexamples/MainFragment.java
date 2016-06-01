@@ -12,6 +12,8 @@ import java.util.UUID;
 import io.caster.realmexamples.models.Task;
 import io.caster.realmexamples.models.User;
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 
@@ -57,7 +59,7 @@ public class MainFragment extends Fragment {
             }
         });
 
-        User u = realm.where(User.class).findFirst();
+        final User u = realm.where(User.class).findFirst();
 
 
         realm.executeTransaction(new Realm.Transaction() {
@@ -75,6 +77,18 @@ public class MainFragment extends Fragment {
         // Output the current task.
         Log.d(TAG, "Task Title: " + u.getTask().getTitle());
 
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                User user = realm.where(User.class).findFirst();
+                Task task = user.getTask();
+                user.setTask(null);
+                RealmObject.deleteFromRealm(task);
+                user.deleteFromRealm();
+            }
+        });
+
+        Log.d(TAG, "User has a task: " + (u.getTask() == null ? "false" : "true"));
 
     }
 
