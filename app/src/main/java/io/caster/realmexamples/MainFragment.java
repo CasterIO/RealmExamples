@@ -57,127 +57,39 @@ public class MainFragment extends Fragment {
             }
         });
 
-        User u = realm.where(User.class).findFirst();
-
-
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 User u = realm.where(User.class).findFirst();
                 Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
-                t.setTitle("Take out Recycling");
-                t.setDescription("Do it before morning!");
-                u.setTask(t);
+                t.setTitle("Test Task");
+                t.setDescription("Foo Bar");
+                u.getTasks().add(t);
             }
         });
 
-        // Output the current task.
-        Log.d(TAG, "Task Title: " + u.getTask().getTitle());
-
-        // Create 5 users with 5 tasks
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                User u = realm.createObject(User.class);
-                u.setFirstName("Bill");
-                u.setLastName("Smith");
-                u.setId(UUID.randomUUID().toString());
-
-                Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
-                t.setTitle("Go cycling");
-                t.setDescription("Have fun too!");
-                u.setTask(t);
-            }
-        });
+        User u = realm.where(User.class).findFirst();
+        Log.d(TAG, u.getTasks().get(0).getTitle() + " size - " + Integer.toString(u.getTasks().size()));
 
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                User u = realm.createObject(User.class);
-                u.setFirstName("Boskar");
-                u.setLastName("Lints");
-                u.setId(UUID.randomUUID().toString());
+                User u = realm.where(User.class).findFirst();
+                Task t1 = realm.createObject(Task.class);
+                t1.setTitle("Exercise More");
+                u.getTasks().add(t1);
 
-                Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
-                t.setTitle("Buy new shoes");
-                t.setDescription("Brown ones, to match the belt.");
-                t.setCompleted(true); // Aha! Already did this one!
-                u.setTask(t);
+                Task t2 = realm.createObject(Task.class);
+                t2.setTitle("No More Chips!");
+                u.getTasks().add(t2);
+
+                Task t3= realm.createObject(Task.class);
+                t3.setTitle("Buy Veggies!");
+                u.getTasks().add(t3);
             }
         });
 
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                User u = realm.createObject(User.class);
-                u.setFirstName("Suzi");
-                u.setLastName("Lopez");
-                u.setId(UUID.randomUUID().toString());
-
-                Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
-                t.setTitle("Review pull request for release.");
-                t.setDescription("Take your time, it is important!");
-                u.setTask(t);
-            }
-        });
-
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                User u = realm.createObject(User.class);
-                u.setFirstName("Warren");
-                u.setLastName("Chu");
-                u.setId(UUID.randomUUID().toString());
-
-                Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
-                t.setTitle("Finish Budget");
-                t.setDescription("Finalize runway calculations too.");
-                u.setTask(t);
-            }
-        });
-
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                User u = realm.createObject(User.class);
-                u.setFirstName("Wendy");
-                u.setLastName("Jackson");
-                u.setId(UUID.randomUUID().toString());
-
-                Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
-                t.setTitle("Finish Marketing Plan");
-                t.setDescription("Include social account metrics in calculations.");
-                u.setTask(t);
-
-            }
-        });
-
-        RealmResults<Task> tasks = realm.where(Task.class)
-                .beginsWith("title", "Finish")
-                .findAll();
-
-        Log.d(TAG, "Tasks that have a title starting with 'Finish': " + Integer.toString(tasks.size()));
-
-        // Find all users who have a task title that starts with 'Finish'
-        RealmResults<User> users = realm.where(User.class)
-                .beginsWith("task.title", "Finish")
-                .findAll();
-
-
-        Log.d(TAG, "Users found that have a task title starting with 'Finish': " + Integer.toString(users.size()));
-
-        // Find all users who have a tasks that are completed.
-        RealmResults<User> usersWithCompletedTasks = realm.where(User.class)
-                .equalTo("task.isCompleted", true)
-                .findAll();
-
-        Log.d(TAG, "Number of users with completed tasks: " + Integer.toString(usersWithCompletedTasks.size()));
+        Log.d(TAG, Integer.toString(u.getTasks().size()));
 
     }
 

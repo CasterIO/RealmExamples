@@ -1,5 +1,6 @@
 package io.caster.realmexamples.models;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -10,6 +11,7 @@ public class User extends RealmObject {
     private String firstName;
     private String lastName;
     private Task task;
+    private RealmList<Task> tasks;
 
 
     public String getId() {
@@ -42,5 +44,13 @@ public class User extends RealmObject {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    public RealmList<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(RealmList<Task> tasks) {
+        this.tasks = tasks;
     }
 }
