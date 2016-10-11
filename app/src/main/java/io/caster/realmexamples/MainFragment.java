@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import io.caster.realmexamples.models.Task;
 import io.caster.realmexamples.models.User;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -47,49 +48,94 @@ public class MainFragment extends Fragment {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                // Only create a user if we don't have one.
-                if (realm.where(User.class).count() == 0) {
-                    User u = realm.createObject(User.class);
-                    u.setFirstName("Donn");
-                    u.setLastName("Felker");
-                    u.setId(UUID.randomUUID().toString());
+
+                // John
+                User john = realm.createObject(User.class, UUID.randomUUID().toString());
+                john.setFirstName("John");
+                john.setLastName("Doe");
+
+                // Jane
+                User jane = realm.createObject(User.class, UUID.randomUUID().toString());
+                jane.setFirstName("Jane");
+                jane.setLastName("Doe");
+
+                // Homework
+                Task homework = realm.createObject(Task.class, UUID.randomUUID().toString());
+                homework.setTitle("Homework");
+                homework.setCompleted(true);
+                john.getTasks().add(homework);
+
+                // Dishes
+                Task dishes = realm.createObject(Task.class, UUID.randomUUID().toString());
+                dishes.setTitle("Dishes");
+                john.getTasks().add(dishes);
+                jane.getTasks().add(dishes);
+
+                // Trash
+                Task trash= realm.createObject(Task.class, UUID.randomUUID().toString());
+                trash.setTitle("Trash");
+                john.getTasks().add(trash);
+                jane.getTasks().add(trash);
+
+                // Exercise
+                Task exercise = realm.createObject(Task.class, UUID.randomUUID().toString());
+                exercise.setTitle("Exercise");
+                exercise.setCompleted(true);
+                jane.getTasks().add(exercise);
+
+            }
+        });
+
+
+        RealmResults<User> usersWithCompletedTasks = realm.where(User.class)
+                .equalTo("tasks.isCompleted", true)
+
+                .findAll();
+
+        Log.d(TAG, Integer.toString(usersWithCompletedTasks.size()));
+
+
+        Log.d(TAG, "Users and their completed tasks");
+        for (User u : usersWithCompletedTasks)  {
+            for (Task t : u.getTasks()) {
+                if (t.isCompleted()) {
+                    Log.d(TAG, String.format("User: %s, Task: %s", u.getFirstName(), t.getTitle()));
                 }
             }
-        });
+        }
 
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                User u = realm.where(User.class).findFirst();
-                Task t = realm.createObject(Task.class);
-                t.setTitle("Test Task");
-                t.setDescription("Foo Bar");
-                u.getTasks().add(t);
+
+        RealmResults<User> janeCompletedTasks =
+                realm.where(User.class)
+                .equalTo("tasks.isCompleted", true)
+                .equalTo("firstName", "Jane", Case.INSENSITIVE)
+                .findAll();
+
+        Log.d(TAG, "Users named Jane and their completed tasks");
+        for (User u : janeCompletedTasks)  {
+            for (Task t : u.getTasks()) {
+                if (t.isCompleted()) {
+                    Log.d(TAG, String.format("User: %s, Task: %s", u.getFirstName(), t.getTitle()));
+                }
             }
-        });
+        }
 
-        User u = realm.where(User.class).findFirst();
-        Log.d(TAG, u.getTasks().get(0).getTitle() + " size - " + Integer.toString(u.getTasks().size()));
+        RealmResults<User> logicalOrResults =
+                realm.where(User.class)
+                .beginsWith("tasks.title", "t", Case.INSENSITIVE)
+                .or()
+                .beginsWith("tasks.title", "h", Case.INSENSITIVE)
+                .findAll();
 
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                User u = realm.where(User.class).findFirst();
-                Task t1 = realm.createObject(Task.class);
-                t1.setTitle("Exercise More");
-                u.getTasks().add(t1);
-
-                Task t2 = realm.createObject(Task.class);
-                t2.setTitle("No More Chips!");
-                u.getTasks().add(t2);
-
-                Task t3= realm.createObject(Task.class);
-                t3.setTitle("Buy Veggies!");
-                u.getTasks().add(t3);
+        Log.d(TAG, "Users who have tasks that have titles that start with 't' or 'h'.");
+        for (User u : logicalOrResults)  {
+            for (Task t : u.getTasks()) {
+                if (t.getTitle().toLowerCase().startsWith("t") || t.getTitle().toLowerCase().startsWith("h")) {
+                    Log.d(TAG, String.format("User: %s, Task: %s", u.getFirstName(), t.getTitle()));
+                }
             }
-        });
+        }
 
-        Log.d(TAG, Integer.toString(u.getTasks().size()));
 
     }
 
