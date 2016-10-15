@@ -59,6 +59,16 @@ public class MainFragment extends Fragment {
                 jane.setFirstName("Jane");
                 jane.setLastName("Doe");
 
+                // Joe
+                User joe = realm.createObject(User.class, UUID.randomUUID().toString());
+                joe.setFirstName("Joe");
+                joe.setLastName("Smith");
+
+                // Jenny
+                User jenny = realm.createObject(User.class, UUID.randomUUID().toString());
+                jenny.setFirstName("Jenny");
+                jenny.setLastName("Smith");
+
                 // Homework
                 Task homework = realm.createObject(Task.class, UUID.randomUUID().toString());
                 homework.setTitle("Homework");
@@ -83,59 +93,33 @@ public class MainFragment extends Fragment {
                 exercise.setCompleted(true);
                 jane.getTasks().add(exercise);
 
+                // Eliminate Clutter
+                Task eliminateClutter = realm.createObject(Task.class, UUID.randomUUID().toString());
+                eliminateClutter.setTitle("Eliminate Clutter");
+                joe.getTasks().add(eliminateClutter);
+
+                // Work on Report
+                Task workOnReport = realm.createObject(Task.class, UUID.randomUUID().toString());
+                workOnReport.setTitle("Work on Report");
+                jenny.getTasks().add(workOnReport);
+
             }
         });
 
-
-        RealmResults<User> usersWithCompletedTasks = realm.where(User.class)
-                .equalTo("tasks.isCompleted", true)
-
-                .findAll();
-
-        Log.d(TAG, Integer.toString(usersWithCompletedTasks.size()));
-
-
-        Log.d(TAG, "Users and their completed tasks");
-        for (User u : usersWithCompletedTasks)  {
-            for (Task t : u.getTasks()) {
-                if (t.isCompleted()) {
-                    Log.d(TAG, String.format("User: %s, Task: %s", u.getFirstName(), t.getTitle()));
-                }
-            }
-        }
-
-
-        RealmResults<User> janeCompletedTasks =
+        RealmResults<User> users =
                 realm.where(User.class)
-                .equalTo("tasks.isCompleted", true)
-                .equalTo("firstName", "Jane", Case.INSENSITIVE)
-                .findAll();
+                        .contains("firstName", "J", Case.INSENSITIVE)
+                        .beginGroup()
+                            .beginsWith("tasks.title", "E", Case.INSENSITIVE)
+                            .or()
+                            .beginsWith("tasks.title", "W", Case.INSENSITIVE)
+                        .endGroup()
+                        .findAll();
 
-        Log.d(TAG, "Users named Jane and their completed tasks");
-        for (User u : janeCompletedTasks)  {
-            for (Task t : u.getTasks()) {
-                if (t.isCompleted()) {
-                    Log.d(TAG, String.format("User: %s, Task: %s", u.getFirstName(), t.getTitle()));
-                }
-            }
+
+        for (User u : users) {
+            Log.d(TAG, String.format("User: %s", u.getFirstName()));
         }
-
-        RealmResults<User> logicalOrResults =
-                realm.where(User.class)
-                .beginsWith("tasks.title", "t", Case.INSENSITIVE)
-                .or()
-                .beginsWith("tasks.title", "h", Case.INSENSITIVE)
-                .findAll();
-
-        Log.d(TAG, "Users who have tasks that have titles that start with 't' or 'h'.");
-        for (User u : logicalOrResults)  {
-            for (Task t : u.getTasks()) {
-                if (t.getTitle().toLowerCase().startsWith("t") || t.getTitle().toLowerCase().startsWith("h")) {
-                    Log.d(TAG, String.format("User: %s, Task: %s", u.getFirstName(), t.getTitle()));
-                }
-            }
-        }
-
 
     }
 
