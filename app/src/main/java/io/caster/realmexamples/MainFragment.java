@@ -89,7 +89,7 @@ public class MainFragment extends Fragment {
 
                 // Exercise
                 Task exercise = realm.createObject(Task.class, UUID.randomUUID().toString());
-                exercise.setTitle("Exercise");
+                exercise.setTitle("exercise");
                 exercise.setCompleted(true);
                 jane.getTasks().add(exercise);
 
@@ -100,7 +100,7 @@ public class MainFragment extends Fragment {
 
                 // Work on Report
                 Task workOnReport = realm.createObject(Task.class, UUID.randomUUID().toString());
-                workOnReport.setTitle("Work on Report");
+                workOnReport.setTitle("Work on TPS Report");
                 jenny.getTasks().add(workOnReport);
 
             }
