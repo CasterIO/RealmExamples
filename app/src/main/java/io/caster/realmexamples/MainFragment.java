@@ -14,6 +14,7 @@ import io.caster.realmexamples.models.User;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
@@ -89,6 +90,50 @@ public class MainFragment extends Fragment {
         });
 
         Log.d(TAG, "User has a task: " + (u.getTask() == null ? "false" : "true"));
+
+
+        // Create a list of users so we can interact with them.
+        for (int i = 0; i < 10; i++) {
+            final int temp = i;
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    User user = realm.createObject(User.class, UUID.randomUUID().toString());
+                    user.setFirstName("First" + temp);
+                    user.setLastName("Last" + temp);
+                }
+            });
+        }
+
+        RealmResults<User> users = realm.where(User.class).findAll();
+        Log.d(TAG, "Number of users: " + users.size());
+
+        final User firstUser = users.get(0); // The first user in the list.
+
+        // Create a bunch of tasks
+        for (int i = 0; i < 10; i++) {
+            final int temp = i;
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Task task = realm.createObject(Task.class, UUID.randomUUID().toString());
+                    task.setTitle("TempTitle" + temp);
+                    firstUser.getUpcomingTasks().add(task);
+                }
+            });
+        }
+
+
+
+        // How to delete them.
+        // Deleting from a RealmList
+        //firstUser.getUpcomingTasks().remove
+
+
+        realm.where(Task.class).findAll();
+        realm.deleteAll();
+
+
 
     }
 
