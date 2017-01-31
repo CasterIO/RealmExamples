@@ -85,7 +85,6 @@ public class MainFragment extends Fragment {
                 Task task = user.getTask();
                 user.setTask(null);
                 RealmObject.deleteFromRealm(task);
-                user.deleteFromRealm();
             }
         });
 
@@ -123,17 +122,91 @@ public class MainFragment extends Fragment {
             });
         }
 
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                firstUser.getUpcomingTasks().deleteFirstFromRealm();
+            }
+        });
 
 
-        // How to delete them.
-        // Deleting from a RealmList
-        //firstUser.getUpcomingTasks().remove
+        Log.d(TAG, "firstUser breakpoint");
 
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                firstUser.getUpcomingTasks().deleteLastFromRealm();
+            }
+        });
 
-        realm.where(Task.class).findAll();
-        realm.deleteAll();
+        Log.d(TAG, "firstUser second breakpoint");
 
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                firstUser.getUpcomingTasks().deleteFromRealm(1);
+            }
+        });
 
+        Log.d(TAG, "firstUser third breakpoint");
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                firstUser.getUpcomingTasks().deleteAllFromRealm();
+            }
+        });
+
+        Log.d(TAG, "firstUser fourth breakpoint");
+
+        RealmResults<Task> tasks = realm.where(Task.class).findAll();
+
+        Log.d(TAG, "number of tasks: " + tasks.size());
+
+        // delete from realm results.
+        tasks.deleteAllFromRealm();
+
+        // Recreate the tasks
+        // Create a bunch of tasks
+        for (int i = 0; i < 10; i++) {
+            final int temp = i;
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Task task = realm.createObject(Task.class, UUID.randomUUID().toString());
+                    task.setTitle("TempTitle" + temp);
+                    firstUser.getUpcomingTasks().add(task);
+                }
+            });
+        }
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                firstUser.getUpcomingTasks().remove(2);
+            }
+        });
+
+        Log.d(TAG, "number of tasks: " + firstUser.getUpcomingTasks().size());
+
+        RealmResults<Task> allTasks = realm.where(Task.class).findAll();
+
+        Log.d(TAG, "number of tasks in all result: " + allTasks.size());
+
+        realm.delete(Task.class);
+
+        RealmResults<Task> allTasks2 = realm.where(Task.class).findAll();
+
+        Log.d(TAG, "number of tasks in all result after delete: " + allTasks2.size());
+
+        // delete all data in the realm
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.deleteAll();
+                // all data in realm is now gone
+            }
+        });
 
     }
 
