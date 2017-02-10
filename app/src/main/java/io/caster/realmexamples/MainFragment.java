@@ -52,10 +52,9 @@ public class MainFragment extends Fragment {
             public void execute(Realm realm) {
                 // Only create a user if we don't have one.
                 if (realm.where(User.class).count() == 0) {
-                    User u = realm.createObject(User.class);
+                    User u = realm.createObject(User.class, UUID.randomUUID().toString());
                     u.setFirstName("Donn");
                     u.setLastName("Felker");
-                    u.setId(UUID.randomUUID().toString());
                 }
             }
         });
@@ -67,8 +66,7 @@ public class MainFragment extends Fragment {
             @Override
             public void execute(Realm realm) {
                 User u = realm.where(User.class).findFirst();
-                Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
+                Task t = realm.createObject(Task.class, UUID.randomUUID().toString());
                 t.setTitle("Take out Recycling");
                 t.setDescription("Do it before morning!");
                 u.setTask(t);
@@ -159,12 +157,17 @@ public class MainFragment extends Fragment {
 
         Log.d(TAG, "firstUser fourth breakpoint");
 
-        RealmResults<Task> tasks = realm.where(Task.class).findAll();
+        final RealmResults<Task> tasks = realm.where(Task.class).findAll();
 
         Log.d(TAG, "number of tasks: " + tasks.size());
 
-        // delete from realm results.
-        tasks.deleteAllFromRealm();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                // delete from realm results.
+                tasks.deleteAllFromRealm();
+            }
+        });
 
         // Recreate the tasks
         // Create a bunch of tasks
@@ -193,7 +196,12 @@ public class MainFragment extends Fragment {
 
         Log.d(TAG, "number of tasks in all result: " + allTasks.size());
 
-        realm.delete(Task.class);
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(Task.class);
+            }
+        });
 
         RealmResults<Task> allTasks2 = realm.where(Task.class).findAll();
 

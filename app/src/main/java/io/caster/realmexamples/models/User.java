@@ -13,7 +13,6 @@ public class User extends RealmObject {
     private Task task;
     private RealmList<Task> upcomingTasks;
 
-
     public String getId() {
         return id;
     }
@@ -53,4 +52,5 @@ public class User extends RealmObject {
     public void setUpcomingTasks(RealmList<Task> upcomingTasks) {
         this.upcomingTasks = upcomingTasks;
     }
+
 }

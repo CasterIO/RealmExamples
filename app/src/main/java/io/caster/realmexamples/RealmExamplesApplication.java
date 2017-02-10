@@ -11,16 +11,21 @@ public class RealmExamplesApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Realm.init(this);
+
         // Configure Realm for the application
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .name("examples.realm")
+                .schemaVersion(SchemaMigration.SCHEMA_VERSION)
+                .migration(new SchemaMigration())
                 .build();
 
-        Realm.deleteRealm(realmConfiguration); //Deletes the realm,
+        // Realm.deleteRealm(realmConfiguration); //Deletes the realm,
         // use when you want a clean slate for dev/etc
 
         // Make this Realm the default
         Realm.setDefaultConfiguration(realmConfiguration);
+
 
     }
 }
