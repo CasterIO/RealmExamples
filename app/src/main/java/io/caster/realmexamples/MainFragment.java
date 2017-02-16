@@ -12,9 +12,7 @@ import java.util.UUID;
 import io.caster.realmexamples.models.Task;
 import io.caster.realmexamples.models.User;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
@@ -52,10 +50,9 @@ public class MainFragment extends Fragment {
             public void execute(Realm realm) {
                 // Only create a user if we don't have one.
                 if (realm.where(User.class).count() == 0) {
-                    User u = realm.createObject(User.class);
+                    User u = realm.createObject(User.class, UUID.randomUUID().toString());
                     u.setFirstName("Donn");
                     u.setLastName("Felker");
-                    u.setId(UUID.randomUUID().toString());
                 }
             }
         });
@@ -67,8 +64,7 @@ public class MainFragment extends Fragment {
             @Override
             public void execute(Realm realm) {
                 User u = realm.where(User.class).findFirst();
-                Task t = realm.createObject(Task.class);
-                t.setId(UUID.randomUUID().toString());
+                Task t = realm.createObject(Task.class, UUID.randomUUID().toString());
                 t.setTitle("Take out Recycling");
                 t.setDescription("Do it before morning!");
                 u.setTask(t);

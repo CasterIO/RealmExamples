@@ -11,8 +11,10 @@ public class RealmExamplesApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Realm.init(this);
+
         // Configure Realm for the application
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .name("examples.realm")
                 .build();
 
