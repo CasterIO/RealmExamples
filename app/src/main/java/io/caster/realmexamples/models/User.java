@@ -12,6 +12,8 @@ public class User extends RealmObject {
     private String lastName;
     private Task task;
     private RealmList<Task> upcomingTasks;
+    private Book favoriteBook;
+    private RealmList<Dog> dogs;
 
     public String getId() {
         return id;
@@ -53,4 +55,19 @@ public class User extends RealmObject {
         this.upcomingTasks = upcomingTasks;
     }
 
+    public Book getFavoriteBook() {
+        return favoriteBook;
+    }
+
+    public void setFavoriteBook(Book favoriteBook) {
+        this.favoriteBook = favoriteBook;
+    }
+
+    public RealmList<Dog> getDogs() {
+        return dogs;
+    }
+
+    public void setDogs(RealmList<Dog> dogs) {
+        this.dogs = dogs;
+    }
 }
